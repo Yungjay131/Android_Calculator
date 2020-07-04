@@ -26,8 +26,6 @@ public class controller{
     public static ArrayList<Integer> operations = new ArrayList<>();
 
     MainActivity mMainActivity = new MainActivity();
-    private boolean isThereTrigOp;
-    private int trig_index;
 
     public View mView;
     public int textView_id;
@@ -35,6 +33,9 @@ public class controller{
 
     private static ArrayList<Numbers> mNumbers = new ArrayList<>();
     private Calculations mCalculations = new Calculations();
+    private static boolean isValidOperation = false;
+
+    private static Number answer = 0;
     //method for appending numbers to textView
     public void appendNumber(View button_clicked, Map<Integer, String> number_map) {
            if(button_clicked.getId()==R.id.btnPoint && s.contains("."))
@@ -42,6 +43,8 @@ public class controller{
 
             s = s + number_map.get(button_clicked.getId());
             mMainActivity.callToGetValue(number_map.get(button_clicked.getId()), 1);
+
+            isValidOperation = true;
         }
 
     //appending to textView
@@ -52,17 +55,23 @@ public class controller{
 }
     //method for doing the calculation
     public void calculate(View button_clicked, Map<Integer, String> operator_map, Map<String, Integer> operator_map2) {
-        if(!s.equals("")) {
             //writing to ArrayLists
-            mNumbers.add(new Numbers(s));
+            addingNumberToArrayList();
 
             int id = button_clicked.getId();
             operations.add(operator_map2.get(operator_map.get(id)));
             mMainActivity.callToGetValue(operator_map.get(button_clicked.getId()), 1);
+
             s = "";
-        }
     }
 
+
+    public void addingNumberToArrayList(){
+      if(isValidOperation) {
+          mNumbers.add(new Numbers(s));
+          isValidOperation = false;
+      }
+    }
 
     //method for equals button
     public void equals() {
@@ -70,20 +79,19 @@ public class controller{
             //remove the last number and add the current value of s
         Numbers ans = null;
         boolean isTherePreviousCalculation = false;
-        mNumbers.add(new Numbers(s));
+        addingNumberToArrayList();
 
-            Number answer = 0;
+
             //for the actualCalculation
 
             for (int i = 0; i < mNumbers.size() - 1; i++) {
                 switch (operations.get(i)) {
                     case 1:
-                         if(isTherePreviousCalculation) {
-                             answer = mCalculations.add(new Numbers(answer.toString()), mNumbers.get(i+1));
-                         }else {
+                         if(i == 0) {
+                             answer = 0;
                              answer = mCalculations.add(mNumbers.get(i), mNumbers.get(i + 1));
-                             isTherePreviousCalculation = true;
-                         }
+                         }else
+                             answer = mCalculations.add(new Numbers(answer.toString()), mNumbers.get(i + 1));
                         break;
                     case 2:
                         if(isTherePreviousCalculation) {
