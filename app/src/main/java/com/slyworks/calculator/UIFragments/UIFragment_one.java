@@ -58,10 +58,13 @@ public class UIFragment_one extends Fragment implements View.OnClickListener {
         operator_map.put(mButtonsList.get(12).getId(), "/");
         operator_map.put(mButtonsList.get(13).getId(), "x");
 
+
         operator_map2.put("+", 1);
         operator_map2.put("-", 2);
         operator_map2.put("x", 3);
         operator_map2.put("/", 4);
+
+
 
        for(Button btn:mButtonsList)
            btn.setOnClickListener(this);
@@ -91,7 +94,6 @@ public class UIFragment_one extends Fragment implements View.OnClickListener {
             case R.id.btn8:
             case R.id.btn9:
             case R.id.btnPoint:
-                control.appendNumber(view, number_map);
                 break;
             case R.id.btnPlus:
             case R.id.btnMinus:

@@ -1,8 +1,6 @@
 package com.slyworks.calculator.Utils;
 
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,116 +11,80 @@ import com.slyworks.calculator.Numbers;
 import com.slyworks.calculator.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 //import static com.slyworks.calculator.MainActivity.textView1;
 
 
 public class controller{
     //class for handling calculations and managing data
-    public static String s = "";
-    boolean isChanged = false;
+    private MainActivity mMainActivity = new MainActivity();
+    private static String mNumberEntered;
+    private static List<Numbers> mNumbersList = new ArrayList<>();
+    Calculations mCalculations = new Calculations();
 
-    public static ArrayList<Integer> numbers = new ArrayList<>();
-    public static ArrayList<Integer> operations = new ArrayList<>();
+    //endregion
 
-    MainActivity mMainActivity = new MainActivity();
-
-    public View mView;
-    public int textView_id;
-    private boolean  mIsLastEnteredNumber = false;
-
-    private static ArrayList<Numbers> mNumbers = new ArrayList<>();
-    private Calculations mCalculations = new Calculations();
-    private static boolean isValidOperation = false;
-
-    private static Number answer = 0;
     //method for appending numbers to textView
     public void appendNumber(View button_clicked, Map<Integer, String> number_map) {
-           if(button_clicked.getId()==R.id.btnPoint && s.contains("."))
-               return;
 
-            s = s + number_map.get(button_clicked.getId());
-            mMainActivity.callToGetValue(number_map.get(button_clicked.getId()), 1);
-
-            isValidOperation = true;
         }
 
     //appending to textView
     public void writeToTextView(String s) {
         //TODO: use fragment Observer pattern for this part
-        TextView mTextView1 = mView.findViewById(textView_id);
-        mTextView1.append(s);
 }
     //method for doing the calculation
     public void calculate(View button_clicked, Map<Integer, String> operator_map, Map<String, Integer> operator_map2) {
-            //writing to ArrayLists
-            addingNumberToArrayList();
-
-            int id = button_clicked.getId();
-            operations.add(operator_map2.get(operator_map.get(id)));
-            mMainActivity.callToGetValue(operator_map.get(button_clicked.getId()), 1);
-
-            s = "";
+        String s = operator_map.get(button_clicked.getId());
+        int id = operator_map2.get(s);
+        mMainActivity.callToGetValue(s, 1);
+        if(mNumbersList.size() == 0){
+            mNumberEntered = "1";
+        }
+        addToList(id);
+        mNumberEntered = "";
     }
-
-
-    public void addingNumberToArrayList(){
-      if(isValidOperation) {
-          mNumbers.add(new Numbers(s));
-          isValidOperation = false;
-      }
+    public void addToList(int id){
+        int operation = Numbers.NO_OPERATION;
+        boolean isThereAnotherNumber  = true;
+        switch(id){
+            case 0:
+                operation = Numbers.NO_OPERATION;
+                break;
+            case 1:
+                operation = Numbers.ADD;
+                break;
+            case 2:
+                operation = Numbers.SUBTRACT;
+                break;
+            case 3:
+                operation = Numbers.MULTIPLY;
+                break;
+            case 4:
+                operation = Numbers.DIVIDE;
+                break;
+            case 5:
+                operation = Numbers.SIN;
+                isThereAnotherNumber = false;
+                break;
+            case 6:
+                operation = Numbers.COS;
+                isThereAnotherNumber = false;
+                break;
+            case 7:
+                operation = Numbers.TAN;
+                isThereAnotherNumber = false;
+                break;
+        }
+        mNumbersList.add(new Numbers(mNumberEntered,operation, isThereAnotherNumber));
     }
-
     //method for equals button
     public void equals() {
-            //if it is an edit to an existing number
-            //remove the last number and add the current value of s
-        Numbers ans = null;
-        boolean isTherePreviousCalculation = false;
-        addingNumberToArrayList();
-
-
-            //for the actualCalculation
-
-            for (int i = 0; i < mNumbers.size() - 1; i++) {
-                switch (operations.get(i)) {
-                    case 1:
-                         if(i == 0) {
-                             answer = 0;
-                             answer = mCalculations.add(mNumbers.get(i), mNumbers.get(i + 1));
-                         }else
-                             answer = mCalculations.add(new Numbers(answer.toString()), mNumbers.get(i + 1));
-                        break;
-                    case 2:
-                        if(isTherePreviousCalculation) {
-                            answer = mCalculations.subtract(new Numbers(answer.toString()), mNumbers.get(i+1));
-                        }else {
-                            answer = mCalculations.subtract(mNumbers.get(i), mNumbers.get(i + 1));
-                            isTherePreviousCalculation = true;
-                        }
-                        break;
-                    case 3:
-                        if(isTherePreviousCalculation) {
-                            answer = mCalculations.multiply(new Numbers(answer.toString()), mNumbers.get(i+1));
-                        }else {
-                            answer = mCalculations.multiply(mNumbers.get(i), mNumbers.get(i + 1));
-                            isTherePreviousCalculation = true;
-                        }
-                        break;
-                    case 4:
-                        if(isTherePreviousCalculation) {
-                            answer = mCalculations.divide(new Numbers(answer.toString()), mNumbers.get(i+1));
-                        }else {
-                            answer = mCalculations.divide(mNumbers.get(i), mNumbers.get(i + 1));
-                            isTherePreviousCalculation = true;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            mMainActivity.callToGetValue(answer.toString(), 2);
+//TODO:need to find another way of implementing the calculations
+        addToList(Numbers.NO_OPERATION);
+        String ans = mCalculations.performCalculations(mNumbersList);
+        mMainActivity.callToGetValue(ans, 2);
     }
 
 

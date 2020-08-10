@@ -22,7 +22,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
 
 
-    //creating constructor to initialise context for this activtity
+    //creating constructor to initialise context for this activity
     ViewPagerAdapter(Context context){
         this.context = context;
     }
@@ -58,5 +58,6 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+
     }
 }
