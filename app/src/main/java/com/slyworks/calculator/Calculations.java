@@ -1,8 +1,16 @@
 package com.slyworks.calculator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Calculations {
+    public String performCalc(ArrayList<ArrayList<Numbers>> numbersList){
+        int length = numbersList.size();
+        for (ArrayList<Numbers> i: numbersList) {
+            performCalculations(i);
+        }
+        return answer;
+    }
     public  String performCalculations(List<Numbers> numbersList){
         //TODO:implement with Streams
         Number answer = 0;
@@ -14,7 +22,7 @@ public class Calculations {
                         continue;
                     case Numbers.ADD:
                         if(i==0){
-                          answer  =  add(numbersList.get(i),numbersList.get(i+1));
+                            answer  =  add(numbersList.get(i),numbersList.get(i+1));
                         }else{
                             answerTemp = new Numbers(answer.toString(),Numbers.NO_OPERATION,false);
                             answer  = add(answerTemp,numbersList.get(i+1) );
@@ -24,7 +32,7 @@ public class Calculations {
                          if(i == 0){
                              answer = sin(numbersList.get(i));
                          }else{
-                             answerTemp = new Numbers(answer.toString(),Numbers.NO_OPERATION,false);
+                             answerTemp = new Numbers(answer.toString());
                              Numbers answerSin = new Numbers(sin(numbersList.get(i)).toString(),Numbers.NO_OPERATION, false);
                              answer = multiply(answerTemp, answerSin);
                              break;

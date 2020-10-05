@@ -1,7 +1,5 @@
 package com.slyworks.calculator.UIFragments;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.slyworks.calculator.R;
-import com.slyworks.calculator.Utils.controller;
+import com.slyworks.calculator.Controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +36,7 @@ public class UIFragment_one extends Fragment implements View.OnClickListener {
     public Map<Integer, String> operator_map = new HashMap<>();
     public Map<String , Integer> operator_map2 = new HashMap<>();
 
-    controller control = new controller();
+    Controller control = new Controller();
     public  ArrayList<Button> mButtonsList = new ArrayList<>();
 
 
@@ -81,7 +79,7 @@ public class UIFragment_one extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        controller control = new controller();
+        Controller control = new Controller();
         switch (view.getId()) {
             case R.id.btn0:
             case R.id.btn2:

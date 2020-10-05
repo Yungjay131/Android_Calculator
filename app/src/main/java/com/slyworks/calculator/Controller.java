@@ -1,4 +1,4 @@
-package com.slyworks.calculator.Utils;
+package com.slyworks.calculator;
 
 
 import android.view.View;
@@ -16,19 +16,31 @@ import java.util.Map;
 //import static com.slyworks.calculator.MainActivity.textView1;
 
 
-public class controller{
+public class Controller {
     //class for handling calculations and managing data
     private MainActivity mMainActivity = new MainActivity();
     private static String mNumberEntered;
     private static List<Numbers> mNumbersList = new ArrayList<>();
     Calculations mCalculations = new Calculations();
 
+    OnValueChangedListener mListener;
     //endregion
 
-    //method for appending numbers to textView
-    public void appendNumber(View button_clicked, Map<Integer, String> number_map) {
+    public Controller(OnValueChangedListener listener){
+        mListener = listener;
+    }
+    //method for checking if the pressed button is a valid operation
+    //hence format in calling activity would be check()->appendNumber()
+    public void check(){
 
-        }
+    }
+    //method for appending numbers to textView
+    public void appendNumber(String numberPressed) {
+      String temp = "";
+      temp = temp + numberPressed;
+    }
+
+    pub
 
     //appending to textView
     public void writeToTextView(String s) {
@@ -90,34 +102,7 @@ public class controller{
 
     //method for clearing last entered item
     public void clear() {
-        //mMainActivity.callToClearLastEnteredValue();
-     /*  if(textView1.getText().toString().length() == 1)
-           textView1.setText("");
-       if(textView1.getText().length() >= 1) {
-           textView1.setText(textView1.getText().toString().substring(0, textView1.getText().toString().length() - 1));
-
-           if(!sb.equals(""))
-           sb = sb.substring(0,sb.length()-1);
-
-           //if the last thing entered is a number
-           //check if it has more than one digit, and delete accordingly
-           if (numbers.size() > 0) {
-               String str = String.valueOf(numbers.get(numbers.size() - 1));
-
-               if (isLastEnteredNum && str.length() > 1) {
-                   numbers.remove(numbers.size() - 1);
-                   sb = str.substring(0, str.length() - 1);
-               } else if(isLastEnteredNum && str.length() == 1) {
-                   numbers.remove(numbers.size() - 1);
-                   isLastEnteredNum = false;
-               } else if (!isLastEnteredNum) {
-                   operations.remove(operations.size() - 1);
-                   sb = String.valueOf(numbers.get(numbers.size() - 1));
-                   numbers.remove(numbers.size() - 1);
-               }
-           }
-       }
-*/
+        //
     }
 
 

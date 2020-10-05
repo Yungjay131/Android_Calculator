@@ -1,36 +1,29 @@
 package com.slyworks.calculator;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.TextView;
 
 import com.slyworks.calculator.Adapters.FragPagerAdapter;
-import com.slyworks.calculator.UIFragments.UIFragment_one;
-import com.slyworks.calculator.Utils.controller;
-
-import java.util.Objects;
 
 import static android.app.PendingIntent.getActivity;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity
+                  implements OnValueChangedListener,
+                             TextWatcher             {
 
     //TODO:need to find way to implement JSON for persistence
     //TODO:need to learn data types,unboxing again
     //TODO:need to implement swipeView for this project
     private Toolbar toolbar;
 
-    private  static  TextView textView1;
-    private  static TextView textView2;
+    private   TextView textView1;
+    private   TextView textView2;
 
 
    TextWatcher mTextWatcher;
@@ -68,6 +61,8 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });*/
+
+       Controller controller = new Controller(this);
     }
 
     @Override
@@ -97,7 +92,7 @@ public class MainActivity extends AppCompatActivity{
 
 //
     public void setTextView1Data(String sb){
-        controller control = new controller();
+        //Controller control = new Controller();
        //control.writeToTextView( this.textView1.getRootView(), this.textView1.getId(), sb);
     }
 
@@ -105,6 +100,41 @@ public class MainActivity extends AppCompatActivity{
     public void onBackPressed(){
         super.onBackPressed();
         //TODO:code to navigate back to first fragment
+    }
+
+
+    @Override
+    public void onChanged( Integer operation, @Nullable String value) {
+       switch(operation){
+           case Constants.APPEND:
+               textView1.append(value);
+               break;
+           case Constants.SET:
+               textView2.setText(value);
+               break;
+           case Constants.REMOVE_LAST_DIGIT:
+               textView1.setText(textView1.getText().toString().substring(0, textView1.getText().toString().length()-1));
+               break;
+           case Constants.CLEAR_ALL:
+               textView2.setText("");
+               break;
+       }
+    }
+
+    //TextWatcher methods
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }
 

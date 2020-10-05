@@ -25,7 +25,7 @@ public class Numbers {
     private boolean isThereAnotherNum;
 //endregion
 
-public Numbers(String num, int operation,boolean isThereAnotherNum) {
+public Numbers(String num) {
     if(num.contains(".")) {
         this.number = Double.valueOf(num);
         this.type = "Double";
@@ -33,8 +33,6 @@ public Numbers(String num, int operation,boolean isThereAnotherNum) {
         this.number = Integer.valueOf(num);
         this.type  = "Integer";
     }
-    this.operation = operation;
-    this.isThereAnotherNum = isThereAnotherNum;
 }
 
   public Number getNumber(){
@@ -44,11 +42,4 @@ public Numbers(String num, int operation,boolean isThereAnotherNum) {
   public String getType(){
     return type;
   }
-  public int getOperation(){
-    return operation;
-  }
-  public boolean getOtherNumber(){
-    return isThereAnotherNum;
-  }
-
 }

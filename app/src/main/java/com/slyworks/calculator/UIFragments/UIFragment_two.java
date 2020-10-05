@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.slyworks.calculator.R;
-import com.slyworks.calculator.Utils.controller;
+import com.slyworks.calculator.Controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class UIFragment_two extends Fragment implements View.OnClickListener{
              R.id.btnClear2,R.id.btnEquals2,R.id.btnPoint2, R.id.btnBracket_open,R.id.btnBracket_close, R.id.btnLog,R.id.btnSquareRoot,
              R.id.btnExponential,R.id.btnPermutation,R.id.btnPie,R.id.btnLn,R.id.btnRaise_to_power};
 
-     controller control = new controller();
+     Controller control = new Controller();
 
     public Map<Integer, String> number_map = new HashMap<>();
     public Map<Integer, String> operator_map = new HashMap<>();
