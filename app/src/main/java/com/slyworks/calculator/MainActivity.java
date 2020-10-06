@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity
                   implements OnValueChangedListener,
                              TextWatcher             {
 
-    //TODO:need to find way to implement JSON for persistence
+    //TODO:need to find way to implement ViewModel/JSON for persistence
     //TODO:need to learn data types,unboxing again
     //TODO:need to implement swipeView for this project
     private Toolbar toolbar;
@@ -25,13 +25,15 @@ public class MainActivity extends AppCompatActivity
     private   TextView textView1;
     private   TextView textView2;
 
-
-   TextWatcher mTextWatcher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_ui);
+
+        //initialising the controller instance
+        Controller.getInstance(this);
+
 
         //initialising and setting swipeView for the two ui's
         //declaring arrayLists and maps to store operators and numbers
@@ -45,24 +47,8 @@ public class MainActivity extends AppCompatActivity
         textView1 = findViewById(R.id.textView1);
         textView2 = findViewById(R.id.textView2);
 
-       /* textView1.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            new controller().equals();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
-
-       Controller controller = new Controller(this);
+       textView1.addTextChangedListener(this);
+       textView2.addTextChangedListener(this);
     }
 
     @Override

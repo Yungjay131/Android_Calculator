@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.slyworks.calculator.R;
 import com.slyworks.calculator.Controller;
+import com.slyworks.calculator.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,11 +32,10 @@ public class UIFragment_one extends Fragment implements View.OnClickListener {
 
     private final String TAG = getClass().getSimpleName();
 
-    public Map<Integer, String> number_map = new HashMap<>();
-    public Map<Integer, String> operator_map = new HashMap<>();
+    public Map<Integer, String> mMap = new HashMap<>();
     public Map<String , Integer> operator_map2 = new HashMap<>();
 
-    Controller control = new Controller();
+    Controller mControl = Controller.getInstance();
     public  ArrayList<Button> mButtonsList = new ArrayList<>();
 
 
@@ -44,24 +43,18 @@ public class UIFragment_one extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
        View view = inflater.inflate(R.layout.ui, container, false);
-        mButtonsList = control.initialise(view, mButtons, mButtonsIDs);
+       mControl = Controller.getInstance();
+        mButtonsList = mControl.initialise(view, mButtons, mButtonsIDs);
 
         for(int i=0;i<10;i++)
-            number_map.put(mButtonsList.get(i).getId(),String.valueOf(i));
+            mMap.put(mButtonsList.get(i).getId(),String.valueOf(i));
 
-        number_map.put(R.id.btnPoint, ".");
+        mMap.put(R.id.btnPoint, ".");
 
-        operator_map.put(mButtonsList.get(10).getId(), "-");
-        operator_map.put(mButtonsList.get(11).getId(), "+");
-        operator_map.put(mButtonsList.get(12).getId(), "/");
-        operator_map.put(mButtonsList.get(13).getId(), "x");
-
-
-        operator_map2.put("+", 1);
-        operator_map2.put("-", 2);
-        operator_map2.put("x", 3);
-        operator_map2.put("/", 4);
-
+        mMap.put(mButtonsList.get(10).getId(), "-");
+        mMap.put(mButtonsList.get(11).getId(), "+");
+        mMap.put(mButtonsList.get(12).getId(), "/");
+        mMap.put(mButtonsList.get(13).getId(), "x");
 
 
        for(Button btn:mButtonsList)
@@ -79,7 +72,6 @@ public class UIFragment_one extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Controller control = new Controller();
         switch (view.getId()) {
             case R.id.btn0:
             case R.id.btn2:
@@ -91,19 +83,20 @@ public class UIFragment_one extends Fragment implements View.OnClickListener {
             case R.id.btn7:
             case R.id.btn8:
             case R.id.btn9:
+                mControl.append(mMap.get(view.getId()));
+                break;
             case R.id.btnPoint:
                 break;
             case R.id.btnPlus:
             case R.id.btnMinus:
             case R.id.btnMultiply:
             case R.id.btnDivide:
-                control.calculate(view, operator_map, operator_map2);
+                mControl.getOperation(mMap.get(view.getId()));
                 break;
             case R.id.btnEquals:
-                control.equals();
+                mControl.calculationQuery();
                 break;
             case R.id.btnClear:
-                control.clear();
                 break;
 
             default:

@@ -9,9 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.slyworks.calculator.R;
 import com.slyworks.calculator.Controller;
-
+import com.slyworks.calculator.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,57 +31,35 @@ public class UIFragment_two extends Fragment implements View.OnClickListener{
              R.id.btnClear2,R.id.btnEquals2,R.id.btnPoint2, R.id.btnBracket_open,R.id.btnBracket_close, R.id.btnLog,R.id.btnSquareRoot,
              R.id.btnExponential,R.id.btnPermutation,R.id.btnPie,R.id.btnLn,R.id.btnRaise_to_power};
 
-     Controller control = new Controller();
+     Controller mControl = Controller.getInstance();
 
-    public Map<Integer, String> number_map = new HashMap<>();
-    public Map<Integer, String> operator_map = new HashMap<>();
+    public Map<Integer, String> mMap = new HashMap<>();
     public Map<String , Integer> operator_map2 = new HashMap<>();
 
     //maps for trig
-    public Map<Integer, String> trig_map = new HashMap<>();
     public Map<String, Integer>  trig_map2 = new HashMap<>();
      ArrayList<Button> mButtonsList = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.ui2, container, false);
-        mButtonsList = control.initialise(view, mButtons, mButtonsIDs);
+        mButtonsList = mControl.initialise(view, mButtons, mButtonsIDs);
 
         //setting OnClickListener
         for(Button btn:mButtonsList)
             btn.setOnClickListener(this);
 
         for(int i=0;i<10;i++)
-            number_map.put(mButtonsList.get(i).getId(), String.valueOf(i));
+            mMap.put(mButtonsList.get(i).getId(), String.valueOf(i));
 
-        operator_map.put(mButtonsList.get(10).getId(), "-");
-        operator_map.put(mButtonsList.get(11).getId(), "+");
-        operator_map.put(mButtonsList.get(12).getId(), "/");
-        operator_map.put(mButtonsList.get(13).getId(), "x");
-        operator_map.put(mButtonsList.get(14).getId(), "Sin");
-        operator_map.put(mButtonsList.get(15).getId(), "Cos");
-        operator_map.put(mButtonsList.get(16).getId(), "Tan");
-
-
-
-        operator_map2.put("+", 1);
-        operator_map2.put("-", 2);
-        operator_map2.put("x", 3);
-        operator_map2.put("/", 4);
-        operator_map2.put("Sin", 5);
-        operator_map2.put("Cos", 6);
-        operator_map2.put("Tan", 7);
-
-        trig_map.put(mButtonsList.get(19).getId(), "Sin");
-        trig_map.put(mButtonsList.get(20).getId(), "Cos");
-        trig_map.put(mButtonsList.get(21).getId(), "Tan");
-        trig_map.put(mButtonsList.get(22).getId(), "Log");
-
-        trig_map2.put("Sin", 5);
-        trig_map2.put("Cos", 6);
-        trig_map2.put("Tan", 7);
-        trig_map2.put("Log", 8);
-
+        mMap.put(mButtonsList.get(10).getId(), "-");
+        mMap.put(mButtonsList.get(11).getId(), "+");
+        mMap.put(mButtonsList.get(12).getId(), "/");
+        mMap.put(mButtonsList.get(13).getId(), "x");
+        mMap.put(mButtonsList.get(14).getId(), "Sin");
+        mMap.put(mButtonsList.get(15).getId(), "Cos");
+        mMap.put(mButtonsList.get(16).getId(), "Tan");
+        mMap.put(mButtonsList.get(22).getId(), "Log");
 
         return view;
     }
@@ -100,8 +77,8 @@ public class UIFragment_two extends Fragment implements View.OnClickListener{
             case R.id.btn7_2:
             case R.id.btn8_2:
             case R.id.btn9_2:
+                mControl.check(null, Integer.valueOf(mMap.get(v.getId())));
             case R.id.btnPoint2:
-                control.appendNumber(v, number_map);
                 break;
             case R.id.btnPlus2:
             case R.id.btnMinus2:
@@ -110,13 +87,12 @@ public class UIFragment_two extends Fragment implements View.OnClickListener{
             case R.id.btnSin:
             case R.id.btnCos:
             case R.id.btnTan:
-                control.calculate(v, operator_map, operator_map2);
+                mControl.check(mMap.get(v.getId()),null);
                 break;
             case R.id.btnEquals2:
-                control.equals();
+                mControl.calculationQuery();
                 break;
             case R.id.btnClear2:
-                control.clear();
                 break;
 
             case R.id.btnBracket_open:

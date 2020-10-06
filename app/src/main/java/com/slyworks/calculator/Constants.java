@@ -15,14 +15,14 @@ public class Constants {
     //for calculations
     public static final int ADD = 1;
     public static final int SUBTRACT = 2;
-    public static final Integer MULTIPLY = 3;
-    public static final Integer DIVISION = 4;
-    public static final Integer SIN = 5;
-    public static final Integer COS = 6;
-    public static final Integer TAN = 7;
-    public static final Integer LOG = 8;
-    public static final Integer SQUAREROOT = 10;
-    public static final Integer RAISE_TO_POWER = 12;
-    public static final Integer PI = 13;
-    public static final Integer EXPONENTIAL = 14;
+    public static final int MULTIPLY = 3;
+    public static final int DIVIDE = 4;
+    public static final int SIN = 5;
+    public static final int COS = 6;
+    public static final int TAN = 7;
+    public static final int LOG = 8;
+    public static final int SQUAREROOT = 10;
+    public static final int RAISE_TO_POWER = 12;
+    public static final int PI = 13;
+    public static final int EXPONENTIAL = 14;
 }

@@ -1,69 +1,107 @@
 package com.slyworks.calculator;
 
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Created by Joshua Sylvanus, 6:58 AM, 10/2/2020.
+ */
 public class Calculations {
-    public String performCalc(ArrayList<ArrayList<Numbers>> numbersList){
-        int length = numbersList.size();
-        for (ArrayList<Numbers> i: numbersList) {
-            performCalculations(i);
-        }
-        return answer;
+    //region Vars
+    String answer = "";
+    Number num;
+    ArrayList<Numbers> a = new ArrayList<>();
+    static Integer mOperation = null;
+    private Controller mController = Controller.getInstance();
+    //endregion
+
+public void insertToQueue(Numbers n){
+    if(a == null){
+        init();
     }
-    public  String performCalculations(List<Numbers> numbersList){
-        //TODO:implement with Streams
-        Number answer = 0;
-        Numbers sum = null;
-        Numbers answerTemp = null;
-        for(int i=0;i<numbersList.size();i++){
-                switch(numbersList.get(i).getOperation()){
-                    case Numbers.NO_OPERATION:
-                        continue;
-                    case Numbers.ADD:
-                        if(i==0){
-                            answer  =  add(numbersList.get(i),numbersList.get(i+1));
-                        }else{
-                            answerTemp = new Numbers(answer.toString(),Numbers.NO_OPERATION,false);
-                            answer  = add(answerTemp,numbersList.get(i+1) );
-                        }
-                        break;
-                    case Numbers.SIN:
-                         if(i == 0){
-                             answer = sin(numbersList.get(i));
-                         }else{
-                             answerTemp = new Numbers(answer.toString());
-                             Numbers answerSin = new Numbers(sin(numbersList.get(i)).toString(),Numbers.NO_OPERATION, false);
-                             answer = multiply(answerTemp, answerSin);
-                             break;
-                         }
-                    case Numbers.COS:
-                        if(i == 0){
-                            answer = sin(numbersList.get(i));
-                        }else{
-                            answerTemp = new Numbers(answer.toString(),Numbers.NO_OPERATION,false);
-                            Numbers answerSin = new Numbers(cos(numbersList.get(i)).toString(),Numbers.NO_OPERATION, false);
-                            answer = multiply(answerTemp, answerSin);
-                            break;
-                        }
-                    case Numbers.TAN:
-                        if(i == 0){
-                            answer = sin(numbersList.get(i));
-                        }else{
-                            answerTemp = new Numbers(answer.toString(),Numbers.NO_OPERATION,false);
-                            Numbers answerSin = new Numbers(tan(numbersList.get(i)).toString(),Numbers.NO_OPERATION, false);
-                            answer = multiply(answerTemp, answerSin);
-                            break;
-                        }
-            }
-            //sum = null;
-            answerTemp = null;
-        }
+    a.add(n);
+    /*
+     *notifying the controller that the queue now has 2 values ,
+     * hence calculation can now be performed
+     */
+    /*
+    if(a.size() >= 2){
+        mController.setBool(true);
+    }
+     */
+}
+public void insertOperation(Integer i){
+    mOperation = i;
+}
 
-        return answer.toString();
-        }
+public void rearrange(Numbers numbers){
+    int index = a.size()-1;
+    a.remove(index);
+    a.add(index, numbers);
 
-    public Number add(Numbers num1, Numbers num2) {
+    /*
+    if(a.size() >= 2){
+        mController.setBool(true);
+    }
+     */
+}
+public String performCalculation(){
+    Numbers num1, num2;
+    if(num != null){
+        num1 = new Numbers(num.toString());
+        num2 = a.get(a.size()-1);
+    }else{
+        num1 = a.get(0);
+        num2 = a.get(1);
+    }
+   switch(mOperation){
+       case Constants.ADD:
+           num = add(num1, num2);
+           break;
+       case Constants.SUBTRACT:
+           num = subtract(num1, num2);
+           break;
+       case Constants.MULTIPLY:
+           num = multiply(num1, num2);
+           break;
+       case Constants.DIVIDE:
+           num = divide(num1,num2);
+           break;
+       case Constants.SIN:
+           num = sin(num1);
+           break;
+       case Constants.COS:
+           num = cos(num1);
+           break;
+       case Constants.TAN:
+           num = tan(num1);
+           break;
+      // case Constants.:
+      // case Constants.:
+     //  case Constants.:
+     //  case Constants.:
+     //  case Constants.:
+      // case Constants.:
+       //    break;
+   }
+    answer = String.valueOf(num);
+
+    //reset values
+    reset();
+
+    return answer;
+}
+
+    public void reset(){
+    //answer = "";
+    a = null;
+    mOperation = null;
+}
+
+    private void init(){
+    a = new ArrayList<>();
+}
+
+    private Number add(Numbers num1, Numbers num2) {
         if(num1.getType().equals("Integer") && num2.getType().equals("Integer"))
             return num1.getNumber().intValue() + num2.getNumber().intValue();
         else if(num1.getType().equals("Integer") && num2.getType().equals("Double"))
@@ -74,8 +112,7 @@ public class Calculations {
             return num1.getNumber().doubleValue() + num2.getNumber().doubleValue();
     }
 
-
-    public Number subtract(Numbers num1, Numbers num2) {
+    private Number subtract(Numbers num1, Numbers num2) {
         if(num1.getType().equals("Integer") && num2.getType().equals("Integer"))
             return num1.getNumber().intValue() - num2.getNumber().intValue();
         else if(num1.getType().equals("Integer") && num2.getType().equals("Double"))
@@ -124,31 +161,30 @@ public class Calculations {
 
 
 
-    private double log(Integer integer) {
-        return Math.log(Double.valueOf(integer));
+    private double log(Numbers num) {
+        return Math.log((double)num.getNumber());
     }
 
-    private double squareRoot(Integer integer) {
-        return Math.sqrt(Double.valueOf(integer));
+    private double squareRoot(Numbers num) {
+        return Math.sqrt((double)num.getNumber());
     }
 
-    private double raiseToPower(Integer integer, Integer integer1) {
-        return Math.pow(Double.valueOf(integer), Double.valueOf(integer1));
+    private double raiseToPower(Numbers num, Numbers num1) {
+        return Math.pow((double)num.getNumber(), (double)num.getNumber());
     }
 
 
-    private double exponential(Integer integer) {
-        return Math.getExponent(Double.valueOf(integer));
+    private double exponential(Numbers num) {
+        return Math.getExponent((double)num.getNumber());
     }
 
-    private double ln(Integer integer) {
-        return Math.log10(Double.valueOf(integer));
+    private double ln(Numbers num) {
+        return Math.log10((double)num.getNumber());
 
     }
 
-    private int factorial(Integer integer) {
-
-        return integer;
+    private int factorial(Numbers num) {
+        return (int)num.getNumber();
     }
 
 }

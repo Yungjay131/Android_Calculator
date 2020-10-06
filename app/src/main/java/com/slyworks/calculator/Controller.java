@@ -1,110 +1,176 @@
 package com.slyworks.calculator;
 
-
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-
-import com.slyworks.calculator.Calculations;
-import com.slyworks.calculator.MainActivity;
-import com.slyworks.calculator.Numbers;
-import com.slyworks.calculator.R;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-//import static com.slyworks.calculator.MainActivity.textView1;
 
-
+/**
+ * Created by Joshua Sylvanus, 7:02 AM, 10/2/2020.
+ */
 public class Controller {
-    //class for handling calculations and managing data
-    private MainActivity mMainActivity = new MainActivity();
-    private static String mNumberEntered;
-    private static List<Numbers> mNumbersList = new ArrayList<>();
-    Calculations mCalculations = new Calculations();
-
+    //region Vars
     OnValueChangedListener mListener;
+    private  static Controller instance;
+    private StringBuilder mTemp;
+    private ArrayList<Numbers> a;
+    private boolean mIsStillASingleOperation = true;
+    private Integer mOperation;
+    private static  Map<String, Integer> mMap = new HashMap<>();
+
+    private Calculations mCalc;
+    private boolean mIsNowValidOp;
     //endregion
 
-    public Controller(OnValueChangedListener listener){
+    private Controller(OnValueChangedListener listener){
         mListener = listener;
-    }
-    //method for checking if the pressed button is a valid operation
-    //hence format in calling activity would be check()->appendNumber()
-    public void check(){
-
-    }
-    //method for appending numbers to textView
-    public void appendNumber(String numberPressed) {
-      String temp = "";
-      temp = temp + numberPressed;
+        mCalc = new Calculations();
     }
 
-    pub
-
-    //appending to textView
-    public void writeToTextView(String s) {
-        //TODO: use fragment Observer pattern for this part
-}
-    //method for doing the calculation
-    public void calculate(View button_clicked, Map<Integer, String> operator_map, Map<String, Integer> operator_map2) {
-        String s = operator_map.get(button_clicked.getId());
-        int id = operator_map2.get(s);
-        mMainActivity.callToGetValue(s, 1);
-        if(mNumbersList.size() == 0){
-            mNumberEntered = "1";
+    public static Controller getInstance(OnValueChangedListener listener){
+        if(instance == null){
+           instance = new Controller(listener);
+           setMapValues();
         }
-        addToList(id);
-        mNumberEntered = "";
+        return instance;
     }
-    public void addToList(int id){
-        int operation = Numbers.NO_OPERATION;
-        boolean isThereAnotherNumber  = true;
-        switch(id){
-            case 0:
-                operation = Numbers.NO_OPERATION;
-                break;
-            case 1:
-                operation = Numbers.ADD;
-                break;
-            case 2:
-                operation = Numbers.SUBTRACT;
-                break;
-            case 3:
-                operation = Numbers.MULTIPLY;
-                break;
-            case 4:
-                operation = Numbers.DIVIDE;
-                break;
-            case 5:
-                operation = Numbers.SIN;
-                isThereAnotherNumber = false;
-                break;
-            case 6:
-                operation = Numbers.COS;
-                isThereAnotherNumber = false;
-                break;
-            case 7:
-                operation = Numbers.TAN;
-                isThereAnotherNumber = false;
-                break;
+
+    //only to be called once i'm sure this class has been instantiated
+    public static Controller getInstance(){
+        return instance;
+    }
+    private static void setMapValues(){
+        mMap.put("+", Constants.ADD);
+        mMap.put("-",Constants.SUBTRACT);
+        mMap.put("x",Constants.MULTIPLY);
+        mMap.put("/",Constants.DIVIDE);
+        mMap.put("Sin",Constants.SIN);
+        mMap.put("Cos",Constants.COS);
+        mMap.put("Tan",Constants.TAN);
+        mMap.put("Log",Constants.LOG);
+        //mMap.put("ln",Constants.ln);
+        mMap.put("",Constants.SQUAREROOT);//TODO:find key for squareroot for button and here
+        //mMap.put("!",Constants.);
+        mMap.put("^",Constants.RAISE_TO_POWER);
+        mMap.put("pi",Constants.PI);
+        mMap.put("e",Constants.EXPONENTIAL);
+    }
+    public void check(@Nullable String s, @Nullable Integer i){
+        if(i != null){
+            switch (i){
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    performNumberButtonCheck(i);
+                default:
+                    break;
+            }
+        }else if(s != null){
+                    performOperandCheck(s);
         }
-        mNumbersList.add(new Numbers(mNumberEntered,operation, isThereAnotherNumber));
-    }
-    //method for equals button
-    public void equals() {
-//TODO:need to find another way of implementing the calculations
-        addToList(Numbers.NO_OPERATION);
-        String ans = mCalculations.performCalculations(mNumbersList);
-        mMainActivity.callToGetValue(ans, 2);
+
     }
 
-
-    //method for clearing last entered item
-    public void clear() {
-        //
+    private void performOperandCheck(String s) {
+        if(mOperation != null){
+            return;
+        }
+        if(s.equals(".") && mTemp.toString().contains(".")){
+            return;
+        }
+        //if it passed all checks get the operation eg "+"
+        getOperation(s);
     }
 
+    private void performNumberButtonCheck(Integer i) {
+        //TODO:do some checks here
+        append(String.valueOf(i));
+    }
+
+    public void append(String buttonPressed){
+        if(mTemp == null){
+            mTemp = new StringBuilder();
+        }
+        if(mTemp.toString() != ""){
+            //meaning a number has been pressed
+            mCalc.rearrange(new Numbers(mTemp.toString()+buttonPressed) );
+        }
+        mTemp.append(buttonPressed);
+        displayToTextView(Constants.APPEND, buttonPressed);
+
+        if(mIsNowValidOp){//i.e if there a now 2 Numbers in the queue
+            calculationQuery();
+        }
+
+    }
+    public void setBool(boolean aBoolean){
+        mIsNowValidOp = aBoolean;
+    }
+    public void getOperation(String operation){
+        //TODO:after performing check, get the operand
+        saveToList();
+        mOperation = mMap.get(operation);
+
+        //adding to queue of operations
+        mCalc.insertOperation(mOperation);
+
+        displayToTextView(Constants.APPEND, operation);
+    }
+    public void saveToList(){
+        Numbers numbers = new Numbers(mTemp.toString());
+        mCalc.insertToQueue(numbers);
+        reset();
+    }
+
+    //TODO:should be called once the equal button is clicked
+    //TODO:should be called once the numbers are up to 2 or a unary operator was pressed
+    //TODO:should be called from onTextChanged() in the MainActivity(), would be necessary to find a way to add and replace the number
+    //TODO:once a value is added
+    public void calculationQuery(){
+        saveToList();
+        String ans = mCalc.performCalculation();
+
+        //TODO:revise use of enums
+        displayToTextView( Constants.SET , ans);
+    }
+
+    public void removeLastDigit(){
+
+    }
+    public void clearAll(){
+
+    }
+    public void saveAnswer(){
+
+    }
+    public void displayToTextView( Integer  op, @Nullable String value){
+        mListener.onChanged(op, value);
+    }
+
+    private void reset(){
+        mTemp = null;
+        //a = null;
+        mOperation = null;
+        mIsStillASingleOperation = false;
+        mIsNowValidOp = false;
+    }
+    private void initValues(){
+        mTemp = new StringBuilder();
+        //a = new ArrayList<>();
+        mIsStillASingleOperation = true;
+    }
+    //TODO:implement the calculations such that if its past a certain number of operations use Threading
+    //TODO:or could be avoided using running the operations as they come up
 
     //method for initialising buttons
     public ArrayList<Button> initialise(View view, Button[] array, int[] array2) {
@@ -115,6 +181,6 @@ public class Controller {
         }
         return mButtonList;
     }
-
-
 }
+
+
